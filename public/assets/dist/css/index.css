@@ -1,0 +1,19 @@
+body{
+    font-family: "Nunito", sans-serif;
+}
+
+.navbar{
+    width: 100%;
+    min-height: 50px;
+    position: fixed;
+    top: 0;
+    background-color: #ffffff;
+    z-index: 8;
+}
+
+
+.box-cart{
+    width: 300px!important;
+    margin-left: -130px;
+    padding: 0;
+}
