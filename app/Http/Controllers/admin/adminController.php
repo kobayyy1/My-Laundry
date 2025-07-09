@@ -150,10 +150,8 @@ class adminController extends Controller
     public function logout()
     {
         if (Auth::guard('admins')->check()) {
-            // session()->has('notif');
-            // session()->put('notif');
             Auth::guard('admins')->logout();
-            return redirect()->route('admin.login');
         }
+        return redirect()->route('admin.login');
     }
 }

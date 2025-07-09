@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 cancelButtonText: "Batal"
             }).then((result) => {
                 if (result.isConfirmed) {
-                    logoutForm.submit();
+                    window.location = '/admin/logout';
                 }
             });
         });

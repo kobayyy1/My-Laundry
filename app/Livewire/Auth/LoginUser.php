@@ -24,11 +24,21 @@ class LoginUser extends Component
         ]);
 
         // Autentikasi
-        if (Auth::guard('users')->attempt(['email' => $this->email, 'password' => $this->password])) {
-            session()->regenerate(); 
-            return redirect()->intended(route('index'));
+        if (Auth::guard('users')->attempt([
+            'email' => $this->email,
+            'password' => $this->password
+        ])) {
+            session()->regenerate();
+
+            $user = Auth::guard('users')->user();
+
+            if (empty($user->phone) || empty($user->country) || empty($user->born) || empty($user->avatar)) {
+                return redirect()->route('profile.update');
+            } else {
+                return redirect()->intended(route('index'));
+            }
         } else {
-            $this->dispatch('errorLogin'); 
+            $this->dispatch('errorLogin');
         }
     }
 

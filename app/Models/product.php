@@ -30,10 +30,8 @@ class product extends Model
     protected $casts = [
         'descriptionList' => 'array',
     ];
-
-    // GAK_KEPAKE
-    // protected function discounter($price, $discount){
-    //     $hasil = $price - (($price * $discount) / 100);
-    //     return $hasil;
-    // }
+    public function orderItems()
+    {
+        return $this->hasMany(ordersItems::class, 'product_id', 'product_id');
+    }
 }

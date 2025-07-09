@@ -17,3 +17,13 @@ body{
     margin-left: -130px;
     padding: 0;
 }
+
+.img-avatar{
+    overflow: hidden;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    object-position: center;
+    object-fit: cover;
+    border-radius: 50%;
+}

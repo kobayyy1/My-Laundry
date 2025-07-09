@@ -20,6 +20,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Pacifico&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
         rel="stylesheet">
+        @include('admin.layouts.style')
 </head>
 
 <body>
@@ -89,8 +90,9 @@
                                 <i class="fas fa-users slider-icons"></i>Admins
                             </a>
                         @endif
-                        <a class="nav-link slider-link" href="#">
-                            <i class="fas fa-users slider-icons"></i>Costumer
+                        <a class="nav-link slider-link @if (Route::currentRouteName() == 'admin.customer') active @endif"
+                            href="{{ route('admin.customer') }}">
+                            <i class="fas fa-user slider-icons"></i>Costumer
                         </a>
                         <hr class="soft my-2">
                         <a class="nav-link slider-link" href="#">
@@ -132,7 +134,6 @@
     <script src="{{ asset('/assets/dist/js/admin/panel.js') }}"></script>
     <script src="{{ asset('/assets/OwlCarousel/owl.carousel.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     @if (session()->has('success'))
         <script>
             Swal.fire({

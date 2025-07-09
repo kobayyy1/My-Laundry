@@ -19,7 +19,7 @@ class Data extends Component
     public function clickSelected()
     {
         if ($this->selectedAll == true) {
-            $this->selected = admins::pluck('product_id')->toArray();
+            $this->selected = admins::pluck('admin_id')->toArray();
         } else {
             $this->selected = [];
         }
@@ -51,7 +51,7 @@ class Data extends Component
     {
         $this->syarat = false;
         try {
-            admins::whereIn('product_id',$this->selected)->delete();
+            admins::whereIn('admin_id',$this->selected)->delete();
             $this->dispatch('deleteModelAll');
         } catch (\Throwable $th) {
             $this->dispatch('deleteModelError');

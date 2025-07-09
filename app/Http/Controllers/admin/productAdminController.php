@@ -5,7 +5,6 @@ namespace App\Http\Controllers\admin;
 use App\Models\product;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use App\Models\productDetail;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
@@ -20,7 +19,7 @@ class productAdminController extends Controller
     {
         return view('admin.product.create');
     }
-
+    
     public function createPost(Request $request)
     {
         $valid = Validator::make($request->all(), [
@@ -79,6 +78,14 @@ class productAdminController extends Controller
     {
         $data = product::find($id);
         return view('admin.product.update', [
+            'data' => $data
+        ]);
+    }
+
+    public function detail($id)
+    {
+        $data = product::find($id);
+        return view('admin.product.detail',[
             'data' => $data
         ]);
     }

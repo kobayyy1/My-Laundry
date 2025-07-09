@@ -82,7 +82,7 @@
                             <tr>
                                 <th class="text-wrap">
                                     <input type="checkbox" wire:model="selected" wire:change="clickSelectedOne"
-                                        class="form-check-input" value="{{ $item->user_id }}">
+                                        class="form-check-input" value="{{ $item->admin_id }}">
                                 </th>
                                 <th class="text-them">
                                     <div class="tb-admin-image"
@@ -107,7 +107,8 @@
                                             <i class="fas fa-ellipsis-v fa-sm fa-fw"></i>
                                         </button>
                                         <div class="dropdown-menu position-fixed border-0 shadow" style="width: 200px">
-                                            <a class="dropdown-item link-secondary" href="#">
+                                            <a class="dropdown-item link-black"
+                                                href="{{ route('admin.profile.detail', ['id' => $item->admin_id]) }}">
                                                 <i class="fas fa-eye fa-sm me-3"></i> Detail
                                             </a>
                                             <a class="dropdown-item link-black"
@@ -148,12 +149,7 @@
             </div>
 
         </div>
-
     </div>
-
-
-
-
     <div class="modal fade" id="ModalDeleteAllData" wire:ignore.self>
         <div class="modal-dialog">
             <div class="modal-content">
@@ -235,3 +231,4 @@
         })
     </script>
 </div>
+

@@ -10,16 +10,18 @@ class productController extends Controller
 {
     public function order($id, $slug)
     {
-
         try {
-            //code...
             $data = product::find($id);
+
+            if (!$data) {
+                return redirect()->back()->with('error', 'Produk tidak ditemukan.');
+            }
+
             $cart = session()->get('cart', []);
 
             if (isset($cart[$id])) {
                 $cart[$id]['qty'] += 1;
             } else {
-                
                 $cart[$id] = [
                     'product_id' => $data->product_id,
                     'title' => $data->title,
@@ -32,17 +34,15 @@ class productController extends Controller
                     'description' => $data->description,
                     'price_other' => $data->price_other,
                     'images' => $data->image,
-                    'qty' => 1, 
+                    'qty' => 1,
                 ];
             }
 
             session()->put('cart', $cart);
 
-
-            return redirect()->back()->with('success', 'Your data saved!');
+            return redirect()->back()->with('success', 'Produk berhasil ditambahkan ke keranjang!');
         } catch (\Throwable $th) {
-            //throw $th;
-            return redirect()->back()->with('error', 'Order gagal!');
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat menambahkan ke keranjang.');
         }
     }
 }

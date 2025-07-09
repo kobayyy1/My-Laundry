@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Http\Controllers\pages;
-
-use Illuminate\Http\Request;
+namespace App\Http\Controllers\Pages;
 use App\Http\Controllers\Controller;
 
 class CartController extends Controller
 {
     public function cart()
     {
-        return view('pages.cart');
+        $cart = session()->get('cart', []);
+        return view('pages.cart', compact('cart'));
     }
 }
+
+

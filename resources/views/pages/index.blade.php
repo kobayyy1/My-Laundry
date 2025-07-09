@@ -92,7 +92,8 @@
                                                 </div>
                                             @endif
                                         </div>
-                                        <a href="{{ route('product.order', ['id' => $item->product_id, 'slug' => $item->slug]) }}" class="btn btn-outline-primary btn-lg w-100 mb-4">Pilih paket</a>
+                                        <a href="{{ route('product.order', ['id' => $item->product_id, 'slug' => $item->slug]) }}"
+                                            class="btn btn-outline-primary btn-lg w-100 mb-4">Pilih paket</a>
                                         <hr class="soft">
                                         <ul style="list-style: none" class="px-2">
                                             @foreach ($item->descriptionList as $items)
@@ -120,7 +121,7 @@
                 <h1>Buruan Daftar Laundryku</h1>
                 <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum quod eum reprehenderit, rerum ullam culpa
                     hic ab placeat natus consectetur voluptates excepturi</p>
-                <button class="btn btn-outline-primary btn-lg px-5">DAFTAR</button>
+                <a href="{{ route('signup') }}" class="btn btn-outline-primary btn-lg px-5">DAFTAR</a>
             </div>
         </div>
     </div>

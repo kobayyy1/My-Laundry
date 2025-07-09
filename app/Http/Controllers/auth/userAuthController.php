@@ -11,13 +11,13 @@ use Illuminate\Support\Facades\Validator;
 
 class userAuthController extends Controller
 {
-  
+
     public function signup()
     {
         return view('auth.signupUser');
     }
 
-  public function login()
+    public function login()
     {
         if (Auth::guard('users')->check()) {
             return redirect()->route('index');
@@ -25,15 +25,7 @@ class userAuthController extends Controller
         return view('auth.loginUser');
     }
 
-      public function logout()
-    {
-        if (Auth::guard('users')->check()) {
-            // session()->has('notif');
-            // session()->put('notif');
-            Auth::guard('users')->Logout();
-            return redirect()->route('index');
-        }
-    }
+
 
     public function signuppost(Request $request)
     {

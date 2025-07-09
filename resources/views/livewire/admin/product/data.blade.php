@@ -109,7 +109,7 @@
                                         <i class="fas fa-ellipsis-v fa-sm fa-fw"></i>
                                     </button>
                                     <div class="dropdown-menu position-fixed border-0 shadow" style="width: 200px">
-                                        <a class="dropdown-item link-secondary" href="#">
+                                        <a class="dropdown-item link-black" href="{{route('admin.product.detail',['id' => $item->product_id])}}">
                                             <i class="fas fa-eye fa-sm me-3"></i> Detail
                                         </a>
                                         <a class="dropdown-item link-black" href="{{route('admin.product.update', ['id' => $item->product_id])}}">
