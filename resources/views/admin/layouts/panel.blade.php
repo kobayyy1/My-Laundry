@@ -20,32 +20,9 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Pacifico&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
         rel="stylesheet">
-        @include('admin.layouts.style')
 </head>
 
 <body>
-
-    <div class="wrapper">
-        <nav class="navbar navbar-expand-md navbar-light">
-            <div class="container-fluid">
-                <button id="sliderButton" class="btn ms-auto" type="button">
-                    <i class="fas fa-bars fa-lg fa-fw"></i>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarID">
-                    <div class="navbar-nav gap-2 ms-auto">
-                        <a class="nav-link text-them-sec" aria-current="page" href="#">
-                            <i class="fas fa-bell fa-lg fa-fw"></i>
-                        </a>
-                        <a class="nav-link text-them-sec" aria-current="page" href="#">
-                            <i class="fas fa-envelope fa-lg fa-fw"></i>
-                        </a>
-                        <a class="nav-link text-them-sec" aria-current="page" href="#">
-                            <i class="fas fa-user fa-lg fa-fw"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </nav>
 
         <div class="slider shadow" id="sliderExample">
             <div class="slider-head">

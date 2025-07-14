@@ -139,17 +139,19 @@
                                     <td>
                                         <span
                                             class="badge 
-                                            @if ($item->status === 'pending') badge-pending
-                                            @elseif($item->status === 'progress') badge-progress
-                                            @elseif($item->status === 'cancelled') badge-cancelled
-                                            @elseif($item->status === 'completed') badge-completed
+                                            @if ($item->status === 'waiting') badge text-bg-warning
+                                            @elseif($item->status === 'process')badge text-bg-primary
+                                            @elseif($item->status === 'cancel') badge text-bg-danger
+                                            @elseif($item->status === 'finish') badge text-bg-info
+                                            @elseif($item->status === 'ready') badge text-bg-success
+                                            @elseif($item->status === 'onpayment_waiting') badge text-bg-secondary
                                             @else badge-secondary @endif">
                                             {{ ucfirst($item->status) }}
                                         </span>
                                     </td>
                                     <td>
                                         <div class="dropdown">
-                                            <button class="btn btn-sm btn-outline-primary dropdown-toggle"
+                                            <button class="btn btn-primary  dropdown-toggle dropdown-toggle-split"
                                                 data-bs-toggle="dropdown" aria-expanded="false">
                                                 Aksi
                                             </button>
