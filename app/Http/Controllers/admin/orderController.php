@@ -7,7 +7,12 @@ use App\Models\orders;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
-
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use Carbon\Carbon;
 
 class orderController extends Controller
 {
@@ -15,6 +20,7 @@ class orderController extends Controller
     {
         return view('admin.orders.index');
     }
+
     public function detailorder($id)
     {
         // Hapus pengecekan user karena ini untuk admin
@@ -107,6 +113,7 @@ class orderController extends Controller
             'order' => $order
         ]);
     }
+
     public function updatepost(Request $request, $id)
     {
         $request->validate([
@@ -129,6 +136,7 @@ class orderController extends Controller
 
         return redirect()->route('admin.orders.update', $order->orders_id)->with('success', 'Pesanan berhasil diperbarui.');
     }
+
     public function downloadInvoice($id)
     {
         try {
@@ -210,5 +218,235 @@ class orderController extends Controller
         $order->calculated_weight = $totalWeight;
 
         return view('admin.orders.print', compact('order'));
+    }
+
+    /**
+     * Export All Orders to Excel
+     */
+    public function exportExcel(Request $request)
+    {
+        try {
+            // Build query with filters
+            $query = orders::query();
+
+            // Apply filters if provided
+            if ($request->filled('search')) {
+                $query->where(function ($q) use ($request) {
+                    $q->where('invoice', 'like', '%' . $request->search . '%')
+                        ->orWhere('username', 'like', '%' . $request->search . '%');
+                });
+            }
+
+            if ($request->filled('status')) {
+                $query->where('status', $request->status);
+            }
+
+            if ($request->filled('date_from')) {
+                $query->whereDate('created_at', '>=', $request->date_from);
+            }
+
+            if ($request->filled('date_to')) {
+                $query->whereDate('created_at', '<=', $request->date_to);
+            }
+
+            // Get orders with related data
+            $orders = $query->orderBy('created_at', 'desc')->get();
+
+            // Create new Spreadsheet
+            $spreadsheet = new Spreadsheet();
+            $sheet = $spreadsheet->getActiveSheet();
+
+            // Set sheet title
+            $sheet->setTitle('Laporan Order Laundry');
+
+            // Header information
+            $sheet->setCellValue('A1', 'LAPORAN ORDER LAUNDRY');
+            $sheet->setCellValue('A2', 'Tanggal Export: ' . Carbon::now()->format('d F Y H:i'));
+            $sheet->setCellValue('A3', 'Total Data: ' . $orders->count() . ' Orders');
+
+            // Style for header
+            $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(16);
+            $sheet->getStyle('A2:A3')->getFont()->setSize(12);
+
+            // Column headers
+            $headers = [
+                'A5' => 'No',
+                'B5' => 'Invoice',
+                'C5' => 'Pelanggan',
+                'D5' => 'Tanggal Order',
+                'E5' => 'Status',
+                'F5' => 'Berat (KG)',
+                'G5' => 'Harga/KG',
+                'H5' => 'Total Harga',
+                'I5' => 'Nomor Telepon',
+            ];
+
+            foreach ($headers as $cell => $header) {
+                $sheet->setCellValue($cell, $header);
+            }
+
+            // Style for column headers
+            $headerRange = 'A5:J5';
+            $sheet->getStyle($headerRange)->getFont()->setBold(true);
+            $sheet->getStyle($headerRange)->getFill()
+                ->setFillType(Fill::FILL_SOLID)
+                ->getStartColor()->setRGB('E3F2FD');
+            $sheet->getStyle($headerRange)->getBorders()
+                ->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+
+            // Data rows
+            $row = 6;
+            $totalAmount = 0;
+            $totalWeight = 0;
+
+            foreach ($orders as $index => $order) {
+                // Calculate grand total
+                $grandTotal = $order->weight && $order->price ? $order->price * $order->weight : 0;
+                $totalAmount += $grandTotal;
+                $totalWeight += $order->weight ?? 0;
+
+                // Status mapping
+                $statusText = match ($order->status) {
+                    'pending' => 'Menunggu',
+                    'progress' => 'Sedang Diproses',
+                    'completed' => 'Selesai',
+                    'cancelled' => 'Dibatalkan',
+                    default => ucfirst($order->status)
+                };
+
+                $sheet->setCellValue('A' . $row, $index + 1);
+                $sheet->setCellValue('B' . $row, $order->invoice);
+                $sheet->setCellValue('C' . $row, $order->username);
+                $sheet->setCellValue('D' . $row, $order->created_at->format('d/m/Y H:i'));
+                $sheet->setCellValue('E' . $row, $statusText);
+                $sheet->setCellValue('F' . $row, $order->weight ?? 0);
+                $sheet->setCellValue('G' . $row, $order->price ?? 0);
+                $sheet->setCellValue('H' . $row, $grandTotal);
+                $sheet->setCellValue('I' . $row, $order->phone ?? '-');
+
+                $row++;
+            }
+
+            // Summary row
+            $row++;
+            $sheet->setCellValue('A' . $row, 'TOTAL:');
+            $sheet->setCellValue('F' . $row, $totalWeight);
+            $sheet->setCellValue('H' . $row, $totalAmount);
+            $sheet->getStyle('A' . $row . ':J' . $row)->getFont()->setBold(true);
+
+            // Apply borders to all data
+            $dataRange = 'A5:J' . ($row);
+            $sheet->getStyle($dataRange)->getBorders()
+                ->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+
+            // Auto-size columns
+            foreach (range('A', 'J') as $column) {
+                $sheet->getColumnDimension($column)->setAutoSize(true);
+            }
+
+            // Format currency columns
+            $sheet->getStyle('G6:H' . $row)->getNumberFormat()
+                ->setFormatCode('#,##0');
+
+            // Create writer and save
+            $writer = new Xlsx($spreadsheet);
+            $fileName = 'laporan-order-laundry-' . Carbon::now()->format('Y-m-d-H-i-s') . '.xlsx';
+            $tempPath = storage_path('app/temp/' . $fileName);
+
+            // Ensure temp directory exists
+            if (!file_exists(dirname($tempPath))) {
+                mkdir(dirname($tempPath), 0755, true);
+            }
+
+            $writer->save($tempPath);
+
+            return response()->download($tempPath, $fileName)->deleteFileAfterSend(true);
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal mengexport data: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Export All Orders to PDF
+     */
+    public function exportPDF(Request $request)
+    {
+        try {
+            // Build query with filters
+            $query = orders::query();
+
+            // Apply filters if provided
+            if ($request->filled('search')) {
+                $query->where(function ($q) use ($request) {
+                    $q->where('invoice', 'like', '%' . $request->search . '%')
+                        ->orWhere('username', 'like', '%' . $request->search . '%');
+                });
+            }
+
+            if ($request->filled('status')) {
+                $query->where('status', $request->status);
+            }
+
+            if ($request->filled('date_from')) {
+                $query->whereDate('created_at', '>=', $request->date_from);
+            }
+
+            if ($request->filled('date_to')) {
+                $query->whereDate('created_at', '<=', $request->date_to);
+            }
+
+            // Get orders
+            $orders = $query->orderBy('created_at', 'desc')->get();
+
+            // Calculate totals
+            $totalAmount = 0;
+            $totalWeight = 0;
+
+            foreach ($orders as $order) {
+                $grandTotal = $order->weight && $order->price ? $order->price * $order->weight : 0;
+                $totalAmount += $grandTotal;
+                $totalWeight += $order->weight ?? 0;
+
+                // Add calculated fields
+                $order->grand_total = $grandTotal;
+                $order->status_text = match ($order->status) {
+                    'pending' => 'Menunggu',
+                    'progress' => 'Sedang Diproses',
+                    'completed' => 'Selesai',
+                    'cancelled' => 'Dibatalkan',
+                    default => ucfirst($order->status)
+                };
+            }
+
+            $data = [
+                'orders' => $orders,
+                'totalAmount' => $totalAmount,
+                'totalWeight' => $totalWeight,
+                'exportDate' => Carbon::now()->format('d F Y H:i'),
+                'filters' => [
+                    'search' => $request->search,
+                    'status' => $request->status,
+                    'date_from' => $request->date_from,
+                    'date_to' => $request->date_to
+                ]
+            ];
+
+            // Generate PDF
+            $pdf = PDF::loadView('admin.orders.export-file', $data);
+            $pdf->setPaper('A4', 'landscape');
+            $pdf->setOptions([
+                'isHtml5ParserEnabled' => true,
+                'isPhpEnabled' => false,
+                'defaultFont' => 'Arial',
+                'defaultMediaType' => 'print',
+                'enable_remote' => false
+            ]);
+
+            $fileName = 'laporan-order-laundry-' . Carbon::now()->format('Y-m-d-H-i-s') . '.pdf';
+
+            return $pdf->download($fileName);
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal mengexport PDF: ' . $e->getMessage());
+        }
     }
 }

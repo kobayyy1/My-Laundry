@@ -2,7 +2,7 @@
 
 @section('head')
     <title>laundryku - Product</title>
-      <style>
+    <style>
         .banner1 {
             background-image: url('/images/banner/banner2.png');
             background-position: top;
@@ -29,13 +29,11 @@
 @endsection
 
 @section('body')
- 
     <div class="pt-5 pb-4 py-md-5">
         <div class="container pt-2 pb-5">
             <div class="d-block mb-5">
-                <h2 class="fw-bold mb-0">Pake Murah Laundry</h2>
-                <p class="mb-0">Lorem ipsum sint excepturi architecto
-                    voluptatibus praesentium unde voluptas animi.</p>
+                <h2 class="fw-bold mb-0">Paket Murah Laundry</h2>
+                <p class="mb-0">Hemat waktu dan uang dengan paket laundry terbaik!</p>
             </div>
 
             {{-- <div class="d-block d-md-none"> --}}
@@ -76,7 +74,8 @@
                                                 </div>
                                             @endif
                                         </div>
-                                        <a href="{{ route('product.order', ['id' => $item->product_id, 'slug' => $item->slug]) }}" class="btn btn-outline-primary btn-lg w-100 mb-4">Pilih paket</a>
+                                        <a href="{{ route('product.order', ['id' => $item->product_id, 'slug' => $item->slug]) }}"
+                                            class="btn btn-outline-primary btn-lg w-100 mb-4">Pilih paket</a>
                                         <hr class="soft">
                                         <ul style="list-style: none" class="px-2">
                                             @foreach ($item->descriptionList as $items)
@@ -97,12 +96,10 @@
 
         </div>
     </div>
-
 @endsection
 
 @section('script')
-
- <script>
+    <script>
         $('#owl-one').owlCarousel({
             // margin: 24,
             merge: true,
@@ -147,5 +144,4 @@
             owl.trigger('prev.owl.carousel', [300]);
         })
     </script>
-   
 @endsection

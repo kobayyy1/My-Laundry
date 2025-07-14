@@ -358,7 +358,8 @@
         <!-- Footer -->
         <div class="footer">
             <p>Terima kasih atas kepercayaan Anda kepada kami.</p>
-            <p>Invoice ini digenerate secara otomatis pada {{ now()->locale('id')->translatedFormat('d F Y H:i') }} WIB
+            <p>Invoice ini digenerate secara otomatis pada{{ now()->setTimezone('Asia/Jakarta')->locale('id')->translatedFormat('d F Y H:i') }} WIB
+
             </p>
         </div>
     </div>

@@ -95,15 +95,18 @@ Route::prefix('admin')->middleware([adminAuthenticate::class])->group(function (
 
 
     Route::get('/order', [orderController::class, 'index'])->name('admin.orders');
-    Route::get('/orders/update/{id}', [OrderController::class, 'update'])->name('admin.orders.update');
-    Route::put('/orders/update/post/{id}', [OrderController::class, 'updatepost'])->name('admin.orders.update.post');
-    Route::get('/orders/delete/{id}', [OrderController::class, 'delete'])->name('admin.orders.delete');
+    Route::get('/orders/update/{id}', [orderController::class, 'update'])->name('admin.orders.update');
+    Route::put('/orders/update/post/{id}', [orderController::class, 'updatepost'])->name('admin.orders.update.post');
+    Route::get('/orders/delete/{id}', [orderController::class, 'delete'])->name('admin.orders.delete');
     Route::post('/order/upload', [orderController::class, 'uploadFile'])->name('admin.orders.upload');
     Route::get('/order/detail{id}', [orderController::class, 'detailorder'])->name('admin.orders.detail');
     // routes/web.php
-    Route::get('/orders/{id}/download', [OrderController::class, 'downloadInvoice'])->name('admin.orders.download');
-    Route::get('/orders/{id}/pdf', [OrderController::class, 'viewInvoicePDF'])->name('admin.orders.pdf');
-    Route::get('/orders/{id}/print', [OrderController::class, 'printOrder'])->name('admin.orders.print');
+    Route::get('/orders/{id}/download', [orderController::class, 'downloadInvoice'])->name('admin.orders.download');
+    Route::get('/orders/{id}/pdf', [orderController::class, 'viewInvoicePDF'])->name('admin.orders.pdf');
+    Route::get('/orders/{id}/print', [orderController::class, 'printOrder'])->name('admin.orders.print');
+    // Export routes
+    Route::get('/export/excel', [orderController::class, 'exportExcel'])->name('export.excel');
+    Route::get('/export/pdf', [orderController::class, 'exportPDF'])->name('export.pdf');
 });
 
 
@@ -123,16 +126,3 @@ Route::prefix('user')->middleware(['auth.user'])->group(function () {
 
     Route::get('/logout', [userProfileController::class, 'logout'])->name('logout');
 });
-
-
-
-
-
-
-
-// Route::get('reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
-// Route::post('reset-password', [ResetPasswordController::class, 'reset'])->name('password.update');
-// Route::get('/send-test-email', function () {
-//     Mail::to('bilnet18@gmail.com')->send(new App\Mail\TestDoang());
-//     return 'Email sent!';
-// });

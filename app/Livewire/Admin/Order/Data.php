@@ -13,6 +13,10 @@ class Data extends Component
     public $search = '', $pages = 5, $status = '';
     public $selected = [], $selectedAll = false, $syarat = false;
     public $selected_id;
+
+    // Export filters
+    public $exportDateFrom = '', $exportDateTo = '';
+
     protected $listeners = ["DeleteActionGo"];
 
     // Reset pagination when search/filter changes
@@ -99,6 +103,44 @@ class Data extends Component
         } catch (\Throwable $th) {
             $this->dispatch('deleteModelError');
         }
+    }
+
+    /**
+     * Export to Excel
+     */
+    public function exportExcel()
+    {
+        $params = [
+            'search' => $this->search,
+            'status' => $this->status,
+            'date_from' => $this->exportDateFrom,
+            'date_to' => $this->exportDateTo
+        ];
+
+        // Build query string
+        $queryString = http_build_query(array_filter($params));
+
+        // Redirect to export route
+        return redirect()->route('export.excel', $queryString ? '?' . $queryString : '');
+    }
+
+    /**
+     * Export to PDF
+     */
+    public function exportPDF()
+    {
+        $params = [
+            'search' => $this->search,
+            'status' => $this->status,
+            'date_from' => $this->exportDateFrom,
+            'date_to' => $this->exportDateTo
+        ];
+
+        // Build query string
+        $queryString = http_build_query(array_filter($params));
+
+        // Redirect to export route
+        return redirect()->route('export.pdf', $queryString ? '?' . $queryString : '');
     }
 
     // Build the query for orders

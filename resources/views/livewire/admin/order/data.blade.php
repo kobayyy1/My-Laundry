@@ -1,5 +1,5 @@
 <div>
-    <div class="container mt-4 mb-4">
+    <div class="main-conten">
         <div class="card-container">
             <div class="header-section">
                 <div class="header-title">Order Product</div>
@@ -8,15 +8,6 @@
 
             <div class="table-container">
                 <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
-                    <div class="d-flex gap-2">
-                        @if (count($selected) > 0)
-                            <button class="btn btn-danger rounded-pill px-4" data-bs-toggle="modal"
-                                data-bs-target="#ModalDeleteAllData">
-                                <i class="fas fa-trash me-2"></i> Hapus Terpilih ({{ count($selected) }})
-                            </button>
-                        @endif
-                    </div>
-
                     <div class="d-flex gap-2 align-items-center">
                         <div class="input-group search-box" style="width: 250px;">
                             <input type="text" class="form-control border-0 bg-transparent"
@@ -53,6 +44,63 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Export Buttons -->
+                    <div class="d-flex gap-2 align-items-center">
+                        <div class="dropdown">
+                            <button class="btn btn-success rounded-pill px-3" data-bs-toggle="dropdown">
+                                <i class="fas fa-download me-2"></i> Export Data
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-end p-3 border-0 shadow" style="width: 300px;">
+                                <h6 class="dropdown-header">Export Options</h6>
+
+                                <!-- Date Range Filter for Export -->
+                                <div class="mb-3">
+                                    <label class="form-label small text-muted mb-1">Tanggal Mulai</label>
+                                    <input type="date" class="form-control form-control-sm"
+                                        wire:model="exportDateFrom">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label small text-muted mb-1">Tanggal Selesai</label>
+                                    <input type="date" class="form-control form-control-sm"
+                                        wire:model="exportDateTo">
+                                </div>
+
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-success btn-sm" wire:click="exportExcel"
+                                        wire:loading.attr="disabled">
+                                        <i class="fas fa-file-excel me-2"></i>
+                                        <span wire:loading.remove>Export Excel</span>
+                                        <span wire:loading>
+                                            <i class="fas fa-spinner fa-spin me-1"></i>Generating...
+                                        </span>
+                                    </button>
+                                    <button class="btn btn-danger btn-sm" wire:click="exportPDF"
+                                        wire:loading.attr="disabled">
+                                        <i class="fas fa-file-pdf me-2"></i>
+                                        <span wire:loading.remove>Export PDF</span>
+                                        <span wire:loading>
+                                            <i class="fas fa-spinner fa-spin me-1"></i>Generating...
+                                        </span>
+                                    </button>
+                                </div>
+
+                                <hr class="my-2">
+                                <small class="text-muted">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Export akan menggunakan filter yang sedang aktif
+                                </small>
+                            </div>
+                        </div>
+
+                        <!-- Bulk Delete Button -->
+                        @if (count($selected) > 0)
+                            <button class="btn btn-danger rounded-pill px-3" data-bs-toggle="modal"
+                                data-bs-target="#ModalDeleteAllData">
+                                <i class="fas fa-trash me-2"></i> Hapus Terpilih ({{ count($selected) }})
+                            </button>
+                        @endif
+                    </div>
                 </div>
 
                 <div class="table-responsive">
@@ -69,9 +117,9 @@
                                 <th>Tanggal</th>
                                 <th>Berat (KG)</th>
                                 <th>Harga/KG</th>
+                                <th>Total Harga</th>
                                 <th>Status</th>
-                                <th>Total</th>
-                                <th style="width: 50px;"></th>
+                                <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -85,65 +133,55 @@
                                     <td>{{ $item->invoice }}</td>
                                     <td>{{ $item->username }}</td>
                                     <td>{{ $item->created_at->format('d M Y H:i') }}</td>
-                                    <td>{{ $item->weight }}</td>
-                                    <td>Rp{{ number_format($item->price, 0, ',', '.') }}</td>
-                                    <td>
-                                        @php
-                                            $statusMap = [
-                                                'waiting' => 'Menunggu',
-                                                'process' => 'Diproses',
-                                                'onpayment_waiting' => 'Menunggu Pembayaran',
-                                                'ready' => 'Siap Dikirim',
-                                                'finish' => 'Selesai',
-                                                'cancel' => 'Dibatalkan',
-                                            ];
-
-                                            $statusClass = match ($item->status) {
-                                                'waiting' => 'status-pending',
-                                                'process' => 'status-progress',
-                                                'onpayment_waiting' => 'status-cancelled',
-                                                'ready', 'finish' => 'status-completed',
-                                                'cancel' => 'status-cancelled',
-                                                default => 'status-secondary',
-                                            };
-
-                                            $statusText = $statusMap[$item->status] ?? ucfirst($item->status);
-                                        @endphp
-
-                                        <span class="status-label {{ $statusClass }}">
-                                            {{ $statusText }}
-                                        </span>
-
-                                    </td>
+                                    <td>{{ number_format($item->weight ?? 0, 0, ',', '.') }}</td>
+                                    <td>Rp{{ number_format($item->price ?? 0, 0, ',', '.') }}</td>
                                     <td>Rp{{ number_format($item->grand_total, 0, ',', '.') }}</td>
                                     <td>
+                                        <span
+                                            class="badge 
+                                            @if ($item->status === 'pending') badge-pending
+                                            @elseif($item->status === 'progress') badge-progress
+                                            @elseif($item->status === 'cancelled') badge-cancelled
+                                            @elseif($item->status === 'completed') badge-completed
+                                            @else badge-secondary @endif">
+                                            {{ ucfirst($item->status) }}
+                                        </span>
+                                    </td>
+                                    <td>
                                         <div class="dropdown">
-                                            <button class="btn btn-outline-primary rounded-circle p-2" type="button"
+                                            <button class="btn btn-sm btn-outline-primary dropdown-toggle"
                                                 data-bs-toggle="dropdown" aria-expanded="false">
-                                                <i class="fas fa-ellipsis-v"></i>
+                                                Aksi
                                             </button>
-                                            <div class="dropdown-menu dropdown-menu-end border-0 shadow"
-                                                style="min-width: 220px;">
-                                                <a class="dropdown-item d-flex align-items-center"
-                                                    href="{{ route('admin.orders.detail', $item->orders_id) }}">
-                                                    <i class="fas fa-eye text-primary me-3"></i> <span>Detail</span>
-                                                </a>
-                                                <a class="dropdown-item d-flex align-items-center"
-                                                    href="{{ route('admin.orders.update', $item->orders_id) }}">
-                                                    <i class="fas fa-pencil-alt text-warning me-3"></i> <span>Edit
-                                                        Data</span>
-                                                </a>
-                                                <button class="dropdown-item d-flex align-items-center"
-                                                    onclick="downloadInvoice({{ $item->orders_id }})">
-                                                    <i class="fas fa-download text-success me-3"></i> <span>Download
-                                                        Invoice</span>
-                                                </button>
-                                                <div class="dropdown-divider"></div>
-                                                <button class="dropdown-item text-danger d-flex align-items-center"
-                                                    wire:click="DeleteAction({{ $item->orders_id }})">
-                                                    <i class="fas fa-trash me-3"></i> <span>Delete Data</span>
-                                                </button>
-                                            </div>
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    <a class="dropdown-item"
+                                                        href="{{ route('admin.orders.detail', $item->orders_id) }}">
+                                                        <i class="fas fa-eye me-2"></i>Detail
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item"
+                                                        href="{{ route('admin.orders.update', $item->orders_id) }}">
+                                                        <i class="fas fa-edit me-2"></i>Edit
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <button class="dropdown-item"
+                                                        onclick="downloadInvoice({{ $item->orders_id }})">
+                                                        <i class="fas fa-download me-2"></i>Download Invoice
+                                                    </button>
+                                                </li>
+                                                <li>
+                                                    <hr class="dropdown-divider">
+                                                </li>
+                                                <li>
+                                                    <button class="dropdown-item text-danger"
+                                                        wire:click="DeleteAction({{ $item->orders_id }})">
+                                                        <i class="fas fa-trash me-2"></i>Hapus
+                                                    </button>
+                                                </li>
+                                            </ul>
                                         </div>
                                     </td>
                                 </tr>
