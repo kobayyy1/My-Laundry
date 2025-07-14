@@ -3,6 +3,9 @@
 @section('head')
 <title>laundryku - About Me Pages</title>
 @endsection
+
+@section('body')
+    
 <div class="container py-5">
     <h2 class="fw-bold text-primary mb-4">
         <i class="fas fa-question-circle me-2"></i>FAQ (Pertanyaan Umum)
@@ -106,6 +109,7 @@
         </div>
     </div>
 </div>
+@endsection
 
 
 

@@ -4,6 +4,8 @@
     <title>laundryku - About Me Pages</title>
 @endsection
 
+@section('body')
+    
 <div class="container py-5">
     <h2 class="fw-bold text-primary mb-4">Layanan Kami</h2>
     <div class="row g-4">
@@ -37,6 +39,7 @@
         </div>
     </div>
 </div>
+@endsection
 
 
 @section('script')

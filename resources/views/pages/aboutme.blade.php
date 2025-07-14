@@ -1,6 +1,7 @@
 @extends('pages.layouts.panel')
 
 @section('head')
+
 @endsection
 
 @section('body')

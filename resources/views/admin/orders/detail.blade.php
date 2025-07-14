@@ -2,87 +2,34 @@
 
 @section('head')
   <style>
-      .order-card {
-          border: none;
-          box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-          border-radius: 12px;
-          overflow: hidden;
-      }
-
-      .order-header {
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          color: white;
-          padding: 1.5rem;
-      }
-
-      .status-badge {
-          padding: 0.5rem 1rem;
-          border-radius: 20px;
-          font-size: 0.9rem;
-          font-weight: 600;
-      }
-
-      .product-image {
-          width: 100px;
-          height: 100px;
-          object-fit: cover;
-          border-radius: 10px;
-          border: 3px solid #f8f9fa;
-      }
-
-      .product-card {
-          background: #fff;
-          border: 1px solid #e9ecef;
-          border-radius: 10px;
-          padding: 1.5rem;
-          margin-bottom: 1rem;
-          transition: transform 0.2s ease;
-      }
-
-      .product-card:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-      }
-
-      .info-row {
-          padding: 0.75rem 0;
-          border-bottom: 1px solid #f1f1f1;
-      }
-
-      .info-row:last-child {
-          border-bottom: none;
-      }
-
-      .price-highlight {
-          color: #28a745;
-          font-weight: bold;
-          font-size: 1.1rem;
-      }
-
-      .total-section {
-          background: #f8f9fa;
-          border-radius: 10px;
-          padding: 1.5rem;
-          margin-top: 2rem;
-      }
-
-      .btn-back {
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          border: none;
-          color: white;
-          padding: 0.75rem 1.5rem;
-          border-radius: 8px;
-          text-decoration: none;
-          display: inline-flex;
-          align-items: center;
-          transition: all 0.3s ease;
-      }
-
-      .btn-back:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-          color: white;
-      }
+    /* Minimal custom CSS untuk enhance Bootstrap classes */
+    .gradient-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .btn-gradient {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: none;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-gradient:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      color: white;
+    }
+    
+    .product-image {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+    }
+    
+    .price-highlight {
+      color: #28a745;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
   </style>
 @endsection
 
@@ -90,18 +37,18 @@
     <div class="container mt-4">
         <!-- Back Button -->
         <div class="mb-4">
-            <a href="{{ route('admin.orders') }}" class="btn-back">
+            <a href="{{ route('admin.orders') }}" class="btn btn-gradient text-white px-4 py-2 rounded-pill text-decoration-none d-inline-flex align-items-center">
                 <i class="fas fa-arrow-left me-2"></i>
                 Kembali ke Daftar Pesanan
             </a>
         </div>
 
         <!-- Order Header Card -->
-        <div class="order-card mb-4">
-            <div class="order-header">
+        <div class="card shadow-sm border-0 rounded-3 mb-4">
+            <div class="card-header gradient-header text-white p-4">
                 <div class="row align-items-center">
                     <div class="col-md-8">
-                        <h3 class="mb-2">
+                        <h3 class="mb-2 fw-bold">
                             <i class="fas fa-receipt me-2"></i>
                             Detail Pesanan #{{ $order->orders_id }}
                         </h3>
@@ -111,7 +58,7 @@
                         </p>
                     </div>
                     <div class="col-md-4 text-md-end">
-                        <span class="status-badge bg-success">
+                        <span class="badge bg-success fs-6 px-3 py-2 rounded-pill">
                             <i class="fas fa-check-circle me-1"></i>
                             {{ ucfirst($order->status) }}
                         </span>
@@ -120,26 +67,26 @@
             </div>
 
             <!-- Order Info -->
-            <div class="p-4">
+            <div class="card-body p-4">
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="info-row">
-                            <strong>No. Pesanan:</strong>
-                            <span class="text-primary">{{ $order->invoice }}</span>
+                        <div class="border-bottom pb-3 mb-3">
+                            <strong class="text-secondary">No. Pesanan:</strong>
+                            <div class="text-primary fw-bold">{{ $order->invoice }}</div>
                         </div>
-                        <div class="info-row">
-                            <strong>Tanggal Order:</strong>
-                            {{ $order->created_at->locale('id')->translatedFormat('d F Y H:i') }} WIB
+                        <div class="border-bottom pb-3 mb-3">
+                            <strong class="text-secondary">Tanggal Order:</strong>
+                            <div>{{ $order->created_at->locale('id')->translatedFormat('d F Y H:i') }} WIB</div>
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="info-row">
-                            <strong>Nama Customer:</strong>
-                            {{ $order->username }}
+                        <div class="border-bottom pb-3 mb-3">
+                            <strong class="text-secondary">Nama Customer:</strong>
+                            <div class="fw-semibold">{{ $order->username }}</div>
                         </div>
-                        <div class="info-row">
-                            <strong>No. Telepon:</strong>
-                            {{ $order->phone }}
+                        <div class="border-bottom pb-3 mb-3">
+                            <strong class="text-secondary">No. Telepon:</strong>
+                            <div class="fw-semibold">{{ $order->phone }}</div>
                         </div>
                     </div>
                 </div>
@@ -147,23 +94,23 @@
         </div>
 
         <!-- Products Section -->
-        <div class="card order-card mb-4">
-            <div class="card-header bg-light">
-                <h5 class="mb-0">
+        <div class="card shadow-sm border-0 rounded-3 mb-4">
+            <div class="card-header bg-light border-0">
+                <h5 class="mb-0 fw-bold text-dark">
                     <i class="fas fa-shopping-bag me-2"></i>
                     Detail Produk
                 </h5>
             </div>
             <div class="card-body">
                 @foreach ($order->items as $item)
-                    <div class="product-card">
+                    <div class="card border rounded-3 p-3 mb-3 shadow-sm">
                         <div class="row align-items-center">
                             <div class="col-md-3 text-center">
                                 @if ($item->product && $item->product->image)
                                     <img src="/images/product/{{ $item->product->image }}" alt="{{ $item->title }}"
-                                        class="product-image">
+                                        class="product-image rounded-3 border border-2 border-light">
                                 @else
-                                    <div class="product-image d-flex align-items-center justify-content-center bg-light">
+                                    <div class="product-image d-flex align-items-center justify-content-center bg-light rounded-3 border border-2">
                                         <i class="fas fa-image fa-2x text-muted"></i>
                                     </div>
                                 @endif
@@ -171,12 +118,11 @@
                             <div class="col-md-9">
                                 <div class="row">
                                     <div class="col-md-8">
-                                        <h5 class="mb-2">{{ $item->title }}</h5>
+                                        <h5 class="mb-2 fw-bold">{{ $item->title }}</h5>
                                         @if ($item->product)
                                             <p class="text-muted mb-2">{{ $item->product->description }}</p>
                                             <div class="d-flex align-items-center">
-                                                <span
-                                                    class="badge {{ $item->product->status == 1 ? 'bg-success' : 'bg-secondary' }} me-2">
+                                                <span class="badge {{ $item->product->status == 1 ? 'bg-success' : 'bg-secondary' }} me-2">
                                                     {{ $item->product->status == 1 ? 'Active' : 'Non Active' }}
                                                 </span>
                                                 <small class="text-muted">
@@ -186,19 +132,18 @@
                                         @endif
                                     </div>
                                     <div class="col-md-4 text-end">
-                                        <p class="mb-1">
-                                            <strong>Harga Satuan:</strong><br>
-                                            <span class="price-highlight">Rp
-                                                {{ number_format($item->final_price, 0, ',', '.') }}</span>
-                                        </p>
-                                        <p class="mb-1">
-                                            <strong>Berat:</strong> {{ $item->qty }} KG
-                                        </p>
-                                        <p class="mb-0">
-                                            <strong>Total:</strong><br>
-                                            <span class="price-highlight">Rp
-                                                {{ number_format($item->item_total, 0, ',', '.') }}</span>
-                                        </p>
+                                        <div class="mb-2">
+                                            <strong class="text-secondary">Harga Satuan:</strong>
+                                            <div class="price-highlight">Rp {{ number_format($item->final_price, 0, ',', '.') }}</div>
+                                        </div>
+                                        <div class="mb-2">
+                                            <strong class="text-secondary">Berat:</strong>
+                                            <div class="fw-semibold">{{ $item->qty }} KG</div>
+                                        </div>
+                                        <div class="mb-0">
+                                            <strong class="text-secondary">Total:</strong>
+                                            <div class="price-highlight fs-5">Rp {{ number_format($item->item_total, 0, ',', '.') }}</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -209,61 +154,58 @@
         </div>
 
         <!-- Summary Section -->
-        <div class="card order-card">
-            <div class="card-header bg-light">
-                <h5 class="mb-0">
+        <div class="card shadow-sm border-0 rounded-3 mb-4">
+            <div class="card-header bg-light border-0">
+                <h5 class="mb-0 fw-bold text-dark">
                     <i class="fas fa-calculator me-2"></i>
                     Rincian Pembayaran
                 </h5>
             </div>
             <div class="card-body">
-                <div class="total-section">
+                <div class="bg-light rounded-3 p-4">
                     <!-- Breakdown per produk -->
                     @foreach ($order->items as $item)
                         <div class="row mb-2">
                             <div class="col-md-8">
-                                <span>{{ $item->title }} ({{ $item->qty }} KG)</span>
+                                <span class="fw-semibold">{{ $item->title }} ({{ $item->qty }} KG)</span>
                             </div>
                             <div class="col-md-4 text-end">
-                                <span>Rp {{ number_format($item->item_total, 0, ',', '.') }}</span>
+                                <span class="fw-semibold">Rp {{ number_format($item->item_total, 0, ',', '.') }}</span>
                             </div>
                         </div>
                     @endforeach
 
                     <!-- Subtotal -->
-                    <hr>
+                    <hr class="my-3">
                     <div class="row mb-2">
                         <div class="col-md-8">
-                            <strong>Subtotal:</strong>
+                            <strong class="fs-6">Subtotal:</strong>
                         </div>
                         <div class="col-md-4 text-end">
-                            <strong>Rp {{ number_format($order->calculated_subtotal, 0, ',', '.') }}</strong>
+                            <strong class="fs-6">Rp {{ number_format($order->calculated_subtotal, 0, ',', '.') }}</strong>
                         </div>
                     </div>
 
                     <!-- Total Berat -->
                     <div class="row mb-2">
                         <div class="col-md-8">
-                            <strong>Total Berat:</strong>
+                            <strong class="fs-6">Total Berat:</strong>
                         </div>
                         <div class="col-md-4 text-end">
-                            <strong>{{ number_format($order->weight ?? $order->calculated_weight, 0, ',', '.') }}
-                                KG</strong>
+                            <strong class="fs-6">{{ number_format($order->weight ?? $order->calculated_weight, 0, ',', '.') }} KG</strong>
                         </div>
                     </div>
 
-                    <hr>
+                    <hr class="my-3">
 
                     <!-- Grand Total -->
                     <div class="row">
                         <div class="col-md-8">
-                            <h4 class="mb-0">
-                                <strong>Total Pembayaran:</strong>
-                            </h4>
+                            <h4 class="mb-0 fw-bold">Total Pembayaran:</h4>
                         </div>
                         <div class="col-md-4 text-end">
                             <h4 class="mb-0">
-                                <span class="price-highlight" style="font-size: 1.5rem;">
+                                <span class="price-highlight" style="font-size: 1.8rem;">
                                     Rp {{ number_format($order->grand_total ?? $order->calculated_subtotal, 0, ',', '.') }}
                                 </span>
                             </h4>
@@ -274,9 +216,9 @@
         </div>
 
         <!-- Admin Actions -->
-        <div class="card order-card">
-            <div class="card-header bg-light">
-                <h5 class="mb-0">
+        <div class="card shadow-sm border-0 rounded-3 mb-4">
+            <div class="card-header bg-light border-0">
+                <h5 class="mb-0 fw-bold text-dark">
                     <i class="fas fa-cogs me-2"></i>
                     Admin Actions
                 </h5>
@@ -284,34 +226,30 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="status">Update Status:</label>
-                            <select class="form-control" id="status"
-                                onchange="updateStatus({{ $order->orders_id }}, this.value)">
-                                <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>Pending
-                                </option>
-                                <option value="processing" {{ $order->status == 'processing' ? 'selected' : '' }}>
-                                    Processing</option>
-                                <option value="shipped" {{ $order->status == 'shipped' ? 'selected' : '' }}>Shipped
-                                </option>
-                                <option value="delivered" {{ $order->status == 'delivered' ? 'selected' : '' }}>Delivered
-                                </option>
-                                <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>Cancelled
-                                </option>
+                        <div class="mb-3">
+                            <label for="status" class="form-label fw-semibold">Update Status:</label>
+                            <select class="form-select" id="status" onchange="updateStatus({{ $order->orders_id }}, this.value)">
+                                <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>Pending</option>
+                                <option value="processing" {{ $order->status == 'processing' ? 'selected' : '' }}>Processing</option>
+                                <option value="shipped" {{ $order->status == 'shipped' ? 'selected' : '' }}>Shipped</option>
+                                <option value="delivered" {{ $order->status == 'delivered' ? 'selected' : '' }}>Delivered</option>
+                                <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
                             </select>
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Quick Actions:</label><br>
-                            <button class="btn btn-primary btn-sm me-2" onclick="printOrder({{ $order->orders_id }})">
-                                <i class="fas fa-print me-1"></i>
-                                Print Order
-                            </button>
-                            <button class="btn btn-success btn-sm" onclick="downloadInvoice({{ $order->orders_id }})">
-                                <i class="fas fa-download me-1"></i>
-                                Download Invoice
-                            </button>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Quick Actions:</label>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-primary btn-sm" onclick="printOrder({{ $order->orders_id }})">
+                                    <i class="fas fa-print me-1"></i>
+                                    Print Order
+                                </button>
+                                <button class="btn btn-success btn-sm" onclick="downloadInvoice({{ $order->orders_id }})">
+                                    <i class="fas fa-download me-1"></i>
+                                    Download Invoice
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -319,7 +257,6 @@
         </div>
     </div>
 
-    <!-- Bagian akhir dari view file Anda, ganti script yang sudah ada -->
     <script>
         function updateStatus(orderId, status) {
             if (confirm('Apakah Anda yakin ingin mengupdate status pesanan ini?')) {

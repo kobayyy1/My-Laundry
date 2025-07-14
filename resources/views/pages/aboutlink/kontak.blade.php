@@ -4,6 +4,8 @@
     <title>laundryku - About Me Pages</title>
 @endsection
 
+@section('body')
+    
 <div class="container py-5">
     <h2 class="fw-bold text-primary mb-4">Kontak Kami</h2>
     <p class="fs-5 text-secondary">Hubungi kami untuk pertanyaan atau pemesanan lebih lanjut:</p>
@@ -13,6 +15,8 @@
         <li><i class="fas fa-envelope text-primary me-2"></i>info@laundrymu.com</li>
     </ul>
 </div>
+@endsection
+
 
 
 @section('script')

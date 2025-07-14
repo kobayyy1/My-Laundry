@@ -3,6 +3,8 @@
 @section('head')
     <title>laundryku - About Me Pages</title>
 @endsection
+@section('body')
+    
 <div class="container py-5">
     <h2 class="fw-bold text-primary mb-4">Cara Pemesanan</h2>
     <ol class="ps-3 text-secondary fs-5">
@@ -14,6 +16,7 @@
         <li class="mb-2">Nikmati kemudahan pembayaran — bisa <strong>tunai</strong> atau melalui <strong>transfer bank</strong>.</li>
     </ol>
 </div>
+@endsection
 
 
 

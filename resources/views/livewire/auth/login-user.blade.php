@@ -41,12 +41,7 @@
             </form>
 
             {{-- Tombol login dengan Gmail --}}
-            <div class="mb-4 text-center">
-                <a href="#" class="btn btn-outline-primary w-100 d-flex align-items-center justify-content-center" style="gap: 10px;">
-                    <img src="{{ url('/images/icons/google.png') }}" alt="google" style="width: 20px; height: 20px;">
-                    <span>Login with Gmail</span>
-                </a>
-            </div>
+         
 
             <div class="text-center">
                 <p class="mb-0">Don't have an account?</p>

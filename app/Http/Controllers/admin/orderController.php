@@ -186,43 +186,6 @@ class orderController extends Controller
         }
     }
 
-    // Alternatif fungsi untuk stream PDF (tampil di browser)
-    public function viewInvoicePDF($id)
-    {
-        $order = orders::with('items.product')
-            ->where('orders_id', $id)
-            ->firstOrFail();
-
-        $subtotal = 0;
-        $totalWeight = 0;
-
-        foreach ($order->items as $item) {
-            $itemPrice = $item->price_other ?? $item->price;
-            $itemTotal = $itemPrice * $item->qty;
-
-            $subtotal += $itemTotal;
-            $totalWeight += $item->qty;
-
-            $item->item_total = $itemTotal;
-            $item->final_price = $itemPrice;
-        }
-
-        $order->calculated_subtotal = $subtotal;
-        $order->calculated_weight = $totalWeight;
-
-        $html = view('admin.orders.invoice', compact('order'))->render();
-
-        $pdf = PDF::loadHTML($html);
-        $pdf->setPaper('A4', 'portrait');
-
-        // PERBAIKAN: Bersihkan nama file dari karakter yang tidak diizinkan
-        $invoiceNumber = preg_replace('/[\/\\\\:*?"<>|]/', '_', $order->invoice);
-        $fileName = 'invoice-' . $invoiceNumber . '.pdf';
-
-        // Stream PDF ke browser (tidak download langsung)
-        return $pdf->stream($fileName);
-    }
-
     public function printOrder($id)
     {
         $order = orders::with('items.product')

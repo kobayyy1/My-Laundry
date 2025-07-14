@@ -97,7 +97,7 @@
 
         .badge-completed {
             background-color: #D1FAE5;
-            color: #67eb4c;
+            color: #155f06;
         }
 
         .badge-cancelled {
